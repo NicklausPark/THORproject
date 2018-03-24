@@ -11,7 +11,7 @@
 ``` cd .. ```
 ``` cd /THORMessageServer ```
 ``` virtualenv env ```
-``` source env/bin/activate ``
+``` source env/bin/activate ```
 ``` pip install requests ```
 ``` pip install Crypto ```
 ``` pip freeze > requirements.txt ```
