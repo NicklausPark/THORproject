@@ -41,3 +41,10 @@
 ``` pip install Crypto ```
 
 ``` pip freeze > requirements.txt ```
+
+## Setup HTTPServer ##
+
+``` pip install HTTPserver ```
+``` pip freeze > requirements.txt ```
+
+#

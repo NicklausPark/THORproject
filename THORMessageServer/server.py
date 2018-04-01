@@ -1,14 +1,31 @@
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import socketserver
+import socket
 import sys
 
-def run(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
-    server_address = (sys.argv[1], int(sys.argv[2]))
-    httpd = server_class(server_address, handler_class)
-    print("Successfully started server at", server_address)
-    httpd.serve_forever()
+HOST = 'localhost'
+PORT = 8888
 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print('Socket Created')
 
-if __name__ == "__main__":
-    run()
+try:
+    s.bind((HOST, PORT))
+except socket.error as msg:
+    print("Bind failed. Error Code : " + str(msg[0]))
+    sys.exit()
 
+print('Socket bind Complete')
+
+s.listen(10)
+print ('Socket now listening')
+
+while True:
+    conn, addr = s.accept()
+    try:
+        while True:
+            data = conn.recv(4096).decode('ascii')
+            if data:
+                print(data) 
+            else:
+                break
+    finally:
+        s.close()
