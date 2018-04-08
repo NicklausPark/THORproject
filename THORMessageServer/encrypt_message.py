@@ -15,8 +15,8 @@ class generate_rsa_keys():
             k=secret_size)
             )
         print("Randomly using " + self.secret_code + " to generate public key")
-        key = RSA.generate(2048)
-        encrypted_key = key.exportKey(passphrase=self.secret_code, pkcs=8, protection="scryptAndAES128-CBC", format="PEM")
+        self.key_1 = RSA.generate(2048)
+        encrypted_key = self.key_1.exportKey(passphrase=self.secret_code, pkcs=8, protection="scryptAndAES128-CBC", format="PEM")
         print(encrypted_key)
         pub = RSA.import_key(encrypted_key, passphrase=self.secret_code)
         prepare_pub = pub.publickey().exportKey(format="PEM")
@@ -29,7 +29,7 @@ class generate_rsa_keys():
 
         private_key = open("server1_priv.pem", "wb")
         with private_key as g:
-            g.write(key.exportKey('PEM'))
+            g.write(self.key_1.exportKey('PEM'))
             g.close()
             
         
@@ -50,6 +50,7 @@ class generate_rsa_keys():
             f.write(prepare_pub.decode("utf-8"))    
             print("Successfully wrote Pubkey to File")
             f.close()
+        
         print(prepare_pub.decode("utf-8"))
     
     def generate_rsa_key3(self):
@@ -69,23 +70,7 @@ class generate_rsa_keys():
             f.write(prepare_pub.decode("utf-8"))    
             print("Successfully wrote Pubkey to File")
         print(prepare_pub.decode("utf-8"))
-    #def message_sender(self):
-        #from sys import argv
-        #import requests
-
-        #file_out = open("unencrypted_message.txt").read())
-        #if len(argv) > 1:
-        #    port=str(argv[1])
-        
-        #while(True):
-            
-        #messageInput = input("message: ")
-            #message = requests.post(
-            #    ("http://127.0.0.1:%s" %(port)),
-            #    data={"message": messageInput}
-            #)
-            #print(message.status_code, message.reason)
-        
+    
 
     def encrypt_message1(self):
         print("encrypting message with RSA key 1")
@@ -98,25 +83,32 @@ class generate_rsa_keys():
         
         cipher_rsa = PKCS1_OAEP.new(recipient_key)
         decode_cipher = cipher_rsa.encrypt(session_key)
-        file_out.write(decode_cipher)
-        
+        decode_cipher_string = str(decode_cipher)
+        #file_out.write(decode_cipher)
+        print(decode_cipher_string)
+        input("")
         cipher_aes = AES.new(session_key, AES.MODE_EAX)
         self.ciphertext, tag = cipher_aes.encrypt_and_digest(encoded_message)
         [ file_out.write(x) for x in (cipher_aes.nonce, tag, self.ciphertext) ]
         file_out.close()
         print("Successfully Encrypted Message")
 
-    def send_message(self):
+    def send_rsa_data(self):
         print("sending encrypted message to server:1")
         
         port = input("to what port?: ")
         
-        message = requests.post(
+        self.message = requests.post(
                 ("http://127.0.0.1:%s" %(port)),
-                data={"message": self.ciphertext}
+                data={ 
+                    self.secret_code.encode("")
+                
+                
+                
+                }
                 
             )
-        print(message.status_code, message.reason)
+        print(self.message.status_code, self.message.reason)
     
     def decrypt_rsa(self):
         print("decrypting message...")
@@ -130,18 +122,16 @@ class generate_rsa_keys():
         session_key = cipher_rsa.decrypt(enc_session_key)
 
         cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
-        data = cipher_aes.decrypt_and_verify(ciphertext, tag)
+        self.data = cipher_aes.decrypt_and_verify(ciphertext, tag)
 
-        print(data.decode("utf-8"))
-
+        print(self.data.decode("utf-8"))
+        
+        
+        
 
 
 if __name__ == "__main__":
     rsa = generate_rsa_keys()
     rsa.generate_rsa_key1()
-    Input_message = input("message: ")
-    rsa.encrypt_message1()
-    rsa.decrypt_rsa()
+    rsa.send_rsa_data()
 
-
-    
