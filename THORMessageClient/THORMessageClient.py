@@ -4,6 +4,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import acquire_random_servers, get_random_bytes
 from Crypto.Cipher import AES, PKCS1_OAEP
 
+# message functionality 
+
 if __name__ =="__main__"
     from sys import argv
 
@@ -18,6 +20,7 @@ if __name__ =="__main__"
             data={"message": messageInput}
         )
         print(message.status_code, message.reason)
+        
 # these functions will generate 3 different RSA keys and store them into files with a secret passphrase
 
 class generate_rsa_keys():
